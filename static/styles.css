@@ -1,0 +1,51 @@
+/* Colores principales */
+:root {
+  --main-red: #c62828;
+  --dark-gray: #313131;
+  --light-gray: #f5f5f5;
+  --soft-gray: #e0e0e0;
+}
+
+/* Navbar */
+.bg-main {
+  background: linear-gradient(90deg, var(--main-red), #8e0000);
+}
+
+/* Títulos */
+.text-main {
+  color: var(--main-red);
+}
+
+/* Fondo general */
+body {
+  background-color: var(--light-gray);
+}
+
+/* Tarjeta filtros */
+.card-filter {
+  border-left: 4px solid var(--main-red);
+}
+
+/* Tabla */
+.table-custom thead {
+  background-color: var(--dark-gray);
+  color: #ffffff;
+}
+
+.table-custom tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.table-custom tbody tr:nth-child(odd) {
+  background-color: var(--soft-gray);
+}
+
+/* Bordes redondeados y sombras suaves */
+.card {
+  border-radius: 0.6rem;
+}
+
+.table {
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
