@@ -49,3 +49,24 @@ body {
   border-radius: 0.6rem;
   overflow: hidden;
 }
+
+/* 👉 Ensanchar columna expr1 en la tabla de detalle
+   (en tu orden actual es la 10ª columna) */
+#detalle-intervencion th:nth-child(10),
+#detalle-intervencion td:nth-child(10) {
+  width: 40%;
+  max-width: 40%;
+  white-space: pre-wrap;   /* respeta saltos de línea */
+  word-wrap: break-word;   /* corta palabras largas */
+}
+
+/* Opcional: achicar un poco columnas de números/fechas para que expr1 gane espacio */
+#detalle-intervencion th:nth-child(1),
+#detalle-intervencion td:nth-child(1),
+#detalle-intervencion th:nth-child(2),
+#detalle-intervencion td:nth-child(2),
+#detalle-intervencion th:nth-child(3),
+#detalle-intervencion td:nth-child(3) {
+  width: 6%;
+}
+
