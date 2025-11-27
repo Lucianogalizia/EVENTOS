@@ -3,14 +3,16 @@
 {% block title %}Intervenciones de pozos{% endblock %}
 
 {% block content %}
+
+<!-- FILTROS ARRIBA, A LO ANCHO -->
 <div class="row mb-4">
-  <div class="col-12 col-lg-4 mb-3">
+  <div class="col-12">
     <div class="card shadow-sm border-0 card-filter">
       <div class="card-body">
         <h5 class="card-title text-main">Filtros</h5>
-        <form method="get">
+        <form method="get" class="row g-3">
           <!-- Selector de pozo -->
-          <div class="mb-3">
+          <div class="col-12 col-md-4">
             <label for="well" class="form-label">Pozo</label>
             <select
               class="form-select"
@@ -32,7 +34,7 @@
 
           <!-- Selector de evento (solo si hay pozo) -->
           {% if pozo_sel %}
-          <div class="mb-3">
+          <div class="col-12 col-md-6">
             <label for="event" class="form-label">Evento</label>
             <select
               class="form-select"
@@ -51,12 +53,22 @@
             </select>
           </div>
           {% endif %}
+
+          <!-- Botón (opcional, por si querés aplicar sin onchange) -->
+          <!--
+          <div class="col-12 col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-danger w-100">Aplicar</button>
+          </div>
+          -->
         </form>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="col-12 col-lg-8 mb-3">
+<!-- DETALLE ABAJO, OCUPANDO TODO EL ANCHO -->
+<div class="row mb-4">
+  <div class="col-12">
     <div class="card shadow-sm border-0">
       <div class="card-body">
         <h5 class="card-title text-main">
@@ -71,7 +83,7 @@
 
         {% if tabla_evento %}
         <div class="table-responsive mt-3">
-          <table class="table table-sm table-striped align-middle mb-0 table-custom">
+          <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
             <thead>
               <tr>
                 {% for col in columnas %}
@@ -93,10 +105,12 @@
         {% elif pozo_sel and not evento_sel %}
         <p class="text-muted mt-3">Elegí un evento para ver el detalle.</p>
         {% elif not pozo_sel %}
-        <p class="text-muted mt-3">Usá el filtro de la izquierda para comenzar.</p>
+        <p class="text-muted mt-3">Usá los filtros de arriba para comenzar.</p>
         {% endif %}
       </div>
     </div>
   </div>
 </div>
+
 {% endblock %}
+
