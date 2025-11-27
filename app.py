@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request
 import pandas as pd
 from pathlib import Path
@@ -101,6 +100,19 @@ def index():
             .reset_index()
         )
 
+        # Aseguramos tipo datetime (por las dudas)
+        eventos_df["date_ops_start"] = pd.to_datetime(
+            eventos_df["date_ops_start"], errors="coerce"
+        )
+        eventos_df["date_ops_end"] = pd.to_datetime(
+            eventos_df["date_ops_end"], errors="coerce"
+        )
+
+        # 👉 ORDENAR: del evento más reciente al más antiguo
+        eventos_df = eventos_df.sort_values(
+            "date_ops_end", ascending=False, na_position="last"
+        )
+
         def fmt_fecha(x):
             if pd.isna(x):
                 return "s/f"
@@ -114,7 +126,9 @@ def index():
             eventos.append(
                 {
                     "event_id": row["event_id"],
-                    "label": f"{row['event_id']} | {fmt_fecha(row['date_ops_start'])} → {fmt_fecha(row['date_ops_end'])} | {row['event_objective_1']}",
+                    "label": f"{row['event_id']} | "
+                             f"{fmt_fecha(row['date_ops_start'])} → {fmt_fecha(row['date_ops_end'])} | "
+                             f"{row['event_objective_1']}",
                 }
             )
 
@@ -163,3 +177,4 @@ def index():
 if __name__ == "__main__":
     # Para pruebas locales
     app.run(host="0.0.0.0", port=8080, debug=True)
+
