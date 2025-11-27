@@ -11,6 +11,13 @@ _df_global = None
 
 
 def load_data():
+    """
+    Carga TODOS los CSV de la carpeta data, pero:
+    - sólo lee las columnas que realmente usamos (usecols)
+    - parsea fechas
+    - ordena por pozo / evento / time_from
+    - cachea el resultado en memoria (_df_global)
+    """
     global _df_global
     if _df_global is not None:
         return _df_global
@@ -19,29 +26,7 @@ def load_data():
     if not csv_files:
         raise FileNotFoundError(f"No se encontraron CSV en {DATA_DIR}")
 
-    df_list = []
-    for f in csv_files:
-        print(f"Cargando: {f.name}")
-        df = pd.read_csv(
-            f,
-            low_memory=False,
-            dtype=str,  # todo como texto para evitar quilombos de tipos
-        )
-        df_list.append(df)
-
-    df = pd.concat(df_list, ignore_index=True)
-
-    # Parseo de fechas
-    for col in ["time_from", "time_to", "date_ops_start", "date_ops_end"]:
-        if col in df.columns:
-            df[col] = pd.to_datetime(df[col], errors="coerce")
-
-    # Orden lógico
-    sort_cols = [c for c in ["well_legal_name", "event_id", "time_from"] if c in df.columns]
-    if sort_cols:
-        df = df.sort_values(sort_cols)
-
-    # Quedarnos con columnas interesantes
+    # Columnas que queremos usar en la app
     wanted_cols = [
         "rig_name",
         "loc_fed_lease_no",
@@ -62,6 +47,34 @@ def load_data():
         "event_id",
     ]
 
+    def col_filter(col_name: str) -> bool:
+        # Sólo leemos las columnas que nos interesan (si no están, pandas las ignora)
+        return col_name in wanted_cols
+
+    df_list = []
+    for f in csv_files:
+        print(f"Cargando: {f.name}")
+        df_part = pd.read_csv(
+            f,
+            low_memory=False,
+            dtype=str,           # todo como texto para evitar quilombos
+            usecols=col_filter,  # 👈 clave para bajar RAM
+        )
+        df_list.append(df_part)
+
+    df = pd.concat(df_list, ignore_index=True)
+
+    # Parseo de fechas
+    for col in ["time_from", "time_to", "date_ops_start", "date_ops_end"]:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors="coerce")
+
+    # Orden lógico
+    sort_cols = [c for c in ["well_legal_name", "event_id", "time_from"] if c in df.columns]
+    if sort_cols:
+        df = df.sort_values(sort_cols)
+
+    # Por las dudas, quedarnos sólo con las columnas que declaramos
     cols_present = [c for c in wanted_cols if c in df.columns]
     df = df[cols_present]
 
@@ -101,17 +114,20 @@ def index():
         )
 
         # Aseguramos tipo datetime (por las dudas)
-        eventos_df["date_ops_start"] = pd.to_datetime(
-            eventos_df["date_ops_start"], errors="coerce"
-        )
-        eventos_df["date_ops_end"] = pd.to_datetime(
-            eventos_df["date_ops_end"], errors="coerce"
-        )
+        if "date_ops_start" in eventos_df.columns:
+            eventos_df["date_ops_start"] = pd.to_datetime(
+                eventos_df["date_ops_start"], errors="coerce"
+            )
+        if "date_ops_end" in eventos_df.columns:
+            eventos_df["date_ops_end"] = pd.to_datetime(
+                eventos_df["date_ops_end"], errors="coerce"
+            )
 
         # 👉 ORDENAR: del evento más reciente al más antiguo
-        eventos_df = eventos_df.sort_values(
-            "date_ops_end", ascending=False, na_position="last"
-        )
+        if "date_ops_end" in eventos_df.columns:
+            eventos_df = eventos_df.sort_values(
+                "date_ops_end", ascending=False, na_position="last"
+            )
 
         def fmt_fecha(x):
             if pd.isna(x):
@@ -127,8 +143,8 @@ def index():
                 {
                     "event_id": row["event_id"],
                     "label": f"{row['event_id']} | "
-                             f"{fmt_fecha(row['date_ops_start'])} → {fmt_fecha(row['date_ops_end'])} | "
-                             f"{row['event_objective_1']}",
+                             f"{fmt_fecha(row.get('date_ops_start'))} → {fmt_fecha(row.get('date_ops_end'))} | "
+                             f"{row.get('event_objective_1', '')}",
                 }
             )
 
@@ -177,4 +193,5 @@ def index():
 if __name__ == "__main__":
     # Para pruebas locales
     app.run(host="0.0.0.0", port=8080, debug=True)
+
 
