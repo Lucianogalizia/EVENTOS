@@ -70,3 +70,18 @@ body {
   width: 6%;
 }
 
+/* ===== Scroll superior/inferior sincronizado ===== */
+.scroll-x-top {
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 16px;         /* solo la barrita */
+}
+
+.scroll-x-top .scroll-inner {
+  height: 1px;
+}
+
+.scroll-x-bottom {
+  overflow-x: auto;
+}
+
