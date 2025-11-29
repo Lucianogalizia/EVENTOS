@@ -14,23 +14,26 @@
           <!-- Selector de pozo -->
           <div class="col-12 col-md-4">
             <label for="well" class="form-label">Pozo</label>
-            <select
-              class="form-select"
+          
+            <!-- Input con autocompletar -->
+            <input
+              class="form-control"
               id="well"
               name="well"
-              onchange="this.form.submit()"
+              list="lista-pozos"
+              placeholder="Escribí o elegí un pozo"
+              value="{{ pozo_sel or '' }}"
               required
-            >
-              <option value="" disabled {% if not pozo_sel %}selected{% endif %}>
-                Seleccioná un pozo
-              </option>
+            />
+          
+            <!-- Lista de pozos para autocompletar -->
+            <datalist id="lista-pozos">
               {% for p in pozos %}
-              <option value="{{ p }}" {% if p == pozo_sel %}selected{% endif %}>
-                {{ p }}
-              </option>
+                <option value="{{ p }}"></option>
               {% endfor %}
-            </select>
+            </datalist>
           </div>
+          
 
           <!-- Selector de evento (solo si hay pozo) -->
           {% if pozo_sel %}
