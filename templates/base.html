@@ -39,7 +39,7 @@
     // ==============================
     // 1) Sincronizar scroll arriba/abajo en Detalle intervención
     // ==============================
-    const topScroll   = document.getElementById("detalle-scroll-top");
+    const topScroll    = document.getElementById("detalle-scroll-top");
     const bottomScroll = document.getElementById("detalle-scroll-bottom");
 
     if (topScroll && bottomScroll) {
@@ -84,8 +84,63 @@
         }
       });
     }
+
+    // ==============================
+    // 3) Scroll horizontal con drag del mouse + rueda
+    //    sobre el contenedor de la tabla
+    // ==============================
+    const scrollAreas = document.querySelectorAll(
+      ".table-scroll-wrapper .table-responsive"
+    );
+
+    scrollAreas.forEach(function (scroll) {
+      let isDown   = false;
+      let startX   = 0;
+      let scrollLeft = 0;
+
+      // Mouse down: empezamos a arrastrar
+      scroll.addEventListener("mousedown", function (e) {
+        isDown = true;
+        scroll.classList.add("dragging");
+        const rect = scroll.getBoundingClientRect();
+        startX = e.pageX - rect.left;
+        scrollLeft = scroll.scrollLeft;
+      });
+
+      // Mouse up / salir del área: dejamos de arrastrar
+      ["mouseup", "mouseleave"].forEach(function (evt) {
+        scroll.addEventListener(evt, function () {
+          if (!isDown) return;
+          isDown = false;
+          scroll.classList.remove("dragging");
+        });
+      });
+
+      // Mouse move: movemos el scroll mientras está apretado
+      scroll.addEventListener("mousemove", function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        const rect = scroll.getBoundingClientRect();
+        const x = e.pageX - rect.left;
+        const walk = x - startX;     // podés multiplicar por 1.2 si querés más velocidad
+        scroll.scrollLeft = scrollLeft - walk;
+      });
+
+      // Extra: usar la rueda del mouse para mover en horizontal
+      scroll.addEventListener(
+        "wheel",
+        function (e) {
+          if (e.deltaY === 0) return;
+          e.preventDefault();
+          scroll.scrollLeft += e.deltaY; // rueda vertical → scroll horizontal
+        },
+        { passive: false }
+      );
+    });
   });
   </script>
 </body>
 </html>
+
+
 
