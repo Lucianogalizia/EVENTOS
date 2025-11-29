@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import pandas as pd
 from google.cloud import bigquery
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 # CONFIG BIGQUERY
 # ============================
 PROJECT_ID = "eventos-479403"
-DATASET_TABLE = "eventos_pozos.eventos_fix"   # dataset.tabla en BigQuery
+DATASET_TABLE = "eventos_pozos.eventos_fix"   # ⚠ ahora apuntamos a eventos_fix
 TABLE_ID = f"{PROJECT_ID}.{DATASET_TABLE}"
 
 bq_client = bigquery.Client(project=PROJECT_ID)
@@ -148,7 +149,6 @@ def index():
         # ---- Validar que el evento seleccionado pertenezca al pozo ----
         eventos_ids_pozo = set(eventos_df["event_id"].astype(str))
         if evento_sel and evento_sel not in eventos_ids_pozo:
-            # Si venía de otro pozo, lo ignoramos para que no quede un evento “fantasma”
             evento_sel = None
 
         # ---- Detalle del evento (si hay evento válido) ----
@@ -176,7 +176,6 @@ def index():
     ]
 
     if df_evento is not None and not df_evento.empty:
-        # Solo mostramos columnas que realmente existen en el DF
         columnas_presentes = [c for c in columnas if c in df_evento.columns]
         tabla_evento = df_evento[columnas_presentes].to_dict(orient="records")
     else:
@@ -194,9 +193,61 @@ def index():
     )
 
 
+# ============================
+# RUTA: EXPORTAR DETALLE A EXCEL
+# ============================
+@app.route("/exportar", methods=["GET"])
+def exportar_evento():
+    pozo = request.args.get("well")
+    evento = request.args.get("event")
+
+    if not pozo or not evento:
+        return "Faltan parámetros (well / event)", 400
+
+    df = get_detalle_evento(pozo, evento)
+    if df is None or df.empty:
+        return "No hay datos para exportar", 404
+
+    # Ordenamos columnas igual que en la tabla (si querés)
+    columnas = [
+        "step_no",
+        "time_from",
+        "time_to",
+        "rig_name",
+        "loc_fed_lease_no",
+        "well_legal_name",
+        "activity_class_desc",
+        "activity_code_desc",
+        "activity_duration",
+        "expr1",
+        "activity_subcode2",
+        "date_ops_start",
+        "date_ops_end",
+        "event_code",
+        "event_objective_1",
+        "event_objective_2",
+    ]
+    cols_presentes = [c for c in columnas if c in df.columns]
+    df = df[cols_presentes]
+
+    # Armamos el Excel en memoria
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        df.to_excel(writer, index=False, sheet_name="Detalle")
+    output.seek(0)
+
+    filename = f"detalle_{pozo}_{evento}.xlsx"
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
 if __name__ == "__main__":
-    # Para correr local
     app.run(host="0.0.0.0", port=8080, debug=True)
+
 
 
 
