@@ -32,5 +32,60 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS general de la app -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // ==============================
+    // 1) Sincronizar scroll arriba/abajo en Detalle intervención
+    // ==============================
+    const topScroll   = document.getElementById("detalle-scroll-top");
+    const bottomScroll = document.getElementById("detalle-scroll-bottom");
+
+    if (topScroll && bottomScroll) {
+      const table = bottomScroll.querySelector("table");
+      const inner = topScroll.querySelector(".scroll-inner");
+      if (table && inner) {
+        inner.style.width = table.scrollWidth + "px";
+      }
+
+      topScroll.addEventListener("scroll", function () {
+        bottomScroll.scrollLeft = topScroll.scrollLeft;
+      });
+
+      bottomScroll.addEventListener("scroll", function () {
+        topScroll.scrollLeft = bottomScroll.scrollLeft;
+      });
+    }
+
+    // ==============================
+    // 2) Resetear EVENTO cuando cambia POZO
+    // ==============================
+    const wellSelect  = document.getElementById("well");
+    const eventSelect = document.getElementById("event");
+
+    if (wellSelect) {
+      wellSelect.addEventListener("change", function () {
+        if (eventSelect) {
+          // Primera opción (placeholder, normalmente "Seleccioná un evento")
+          eventSelect.selectedIndex = 0;
+        }
+        // Enviamos el formulario
+        if (wellSelect.form) {
+          wellSelect.form.submit();
+        }
+      });
+    }
+
+    if (eventSelect) {
+      eventSelect.addEventListener("change", function () {
+        if (eventSelect.form) {
+          eventSelect.form.submit();
+        }
+      });
+    }
+  });
+  </script>
 </body>
 </html>
+
