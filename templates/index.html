@@ -18,6 +18,7 @@
               class="form-select"
               id="well"
               name="well"
+              onchange="this.form.submit()"
               required
             >
               <option value="" disabled {% if not pozo_sel %}selected{% endif %}>
@@ -39,6 +40,7 @@
               class="form-select"
               id="event"
               name="event"
+              onchange="this.form.submit()"
             >
               <option value="" disabled {% if not evento_sel %}selected{% endif %}>
                 Seleccioná un evento
@@ -73,14 +75,9 @@
         </h5>
 
         {% if tabla_evento %}
-        <!-- Barra de scroll superior -->
-        <div id="detalle-scroll-top" class="scroll-x-top mt-2">
-          <div class="scroll-inner"></div>
-        </div>
-
-        <!-- Contenedor con la tabla y scroll inferior -->
-        <div id="detalle-scroll-bottom" class="scroll-x-bottom">
-          <div class="table-responsive mt-1">
+        <!-- wrapper para poder tener barra horizontal -->
+        <div class="table-scroll-wrapper">
+          <div class="table-responsive mt-3">
             <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
               <thead>
                 <tr>
@@ -101,7 +98,6 @@
             </table>
           </div>
         </div>
-
         {% elif pozo_sel and not evento_sel %}
         <p class="text-muted mt-3">Elegí un evento para ver el detalle.</p>
         {% elif not pozo_sel %}
@@ -114,8 +110,6 @@
 
 {% endblock %}
 
-  </div>
-</div>
 
-{% endblock %}
+ 
 
