@@ -18,7 +18,6 @@
               class="form-select"
               id="well"
               name="well"
-              onchange="this.form.submit()"
               required
             >
               <option value="" disabled {% if not pozo_sel %}selected{% endif %}>
@@ -40,7 +39,6 @@
               class="form-select"
               id="event"
               name="event"
-              onchange="this.form.submit()"
             >
               <option value="" disabled {% if not evento_sel %}selected{% endif %}>
                 Seleccioná un evento
@@ -53,13 +51,6 @@
             </select>
           </div>
           {% endif %}
-
-          <!-- Botón (opcional, por si querés aplicar sin onchange) -->
-          <!--
-          <div class="col-12 col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-danger w-100">Aplicar</button>
-          </div>
-          -->
         </form>
       </div>
     </div>
@@ -82,26 +73,35 @@
         </h5>
 
         {% if tabla_evento %}
-        <div class="table-responsive mt-3">
-          <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
-            <thead>
-              <tr>
-                {% for col in columnas %}
-                <th scope="col">{{ col }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for fila in tabla_evento %}
-              <tr>
-                {% for col in columnas %}
-                <td>{{ fila[col] if fila[col] is not none else "" }}</td>
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        <!-- Barra de scroll superior -->
+        <div id="detalle-scroll-top" class="scroll-x-top mt-2">
+          <div class="scroll-inner"></div>
         </div>
+
+        <!-- Contenedor con la tabla y scroll inferior -->
+        <div id="detalle-scroll-bottom" class="scroll-x-bottom">
+          <div class="table-responsive mt-1">
+            <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
+              <thead>
+                <tr>
+                  {% for col in columnas %}
+                  <th scope="col">{{ col }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for fila in tabla_evento %}
+                <tr>
+                  {% for col in columnas %}
+                  <td>{{ fila[col] if fila[col] is not none else "" }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {% elif pozo_sel and not evento_sel %}
         <p class="text-muted mt-3">Elegí un evento para ver el detalle.</p>
         {% elif not pozo_sel %}
@@ -109,6 +109,11 @@
         {% endif %}
       </div>
     </div>
+  </div>
+</div>
+
+{% endblock %}
+
   </div>
 </div>
 
