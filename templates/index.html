@@ -75,42 +75,28 @@
         </h5>
 
         {% if tabla_evento %}
-        <!-- wrapper para poder tener barra horizontal arriba y abajo -->
+        <!-- wrapper para poder tener barra horizontal -->
         <div class="table-scroll-wrapper">
-
-          <!-- Barra de scroll superior -->
-          <div class="scroll-x-top" id="scroll-top">
-            <div class="scroll-inner" id="scroll-top-inner"></div>
-          </div>
-
-          <!-- Contenedor con barra de scroll inferior (la clásica) -->
-          <div class="scroll-x-bottom" id="scroll-bottom">
-            <div class="table-responsive mt-3" id="table-container">
-              <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
-                <thead>
-                  <tr>
-                    {% for col in columnas %}
-                    <th scope="col" {% if col == 'expr1' %}class="col-expr1"{% endif %}>
-                      {{ col }}
-                    </th>
-                    {% endfor %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for fila in tabla_evento %}
-                  <tr>
-                    {% for col in columnas %}
-                    <td {% if col == 'expr1' %}class="col-expr1"{% endif %}>
-                      {{ fila[col] if fila[col] is not none else "" }}
-                    </td>
-                    {% endfor %}
-                  </tr>
+          <div class="table-responsive mt-3">
+            <table class="table table-sm table-striped align-middle mb-0 table-custom" id="detalle-intervencion">
+              <thead>
+                <tr>
+                  {% for col in columnas %}
+                  <th scope="col">{{ col }}</th>
                   {% endfor %}
-                </tbody>
-              </table>
-            </div>
+                </tr>
+              </thead>
+              <tbody>
+                {% for fila in tabla_evento %}
+                <tr>
+                  {% for col in columnas %}
+                  <td>{{ fila[col] if fila[col] is not none else "" }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-
         </div>
         {% elif pozo_sel and not evento_sel %}
         <p class="text-muted mt-3">Elegí un evento para ver el detalle.</p>
@@ -121,37 +107,6 @@
     </div>
   </div>
 </div>
-
-<!-- Script para sincronizar scroll arriba/abajo -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const topBar = document.getElementById('scroll-top');
-  const topInner = document.getElementById('scroll-top-inner');
-  const bottomBar = document.getElementById('scroll-bottom');
-  const tableContainer = document.getElementById('table-container');
-
-  if (!topBar || !topInner || !bottomBar || !tableContainer) {
-    return;
-  }
-
-  function syncWidths() {
-    // el ancho "real" de la tabla
-    topInner.style.width = tableContainer.scrollWidth + 'px';
-  }
-
-  syncWidths();
-  window.addEventListener('resize', syncWidths);
-
-  // sincronizar scroll horizontal
-  topBar.addEventListener('scroll', function () {
-    bottomBar.scrollLeft = topBar.scrollLeft;
-  });
-
-  bottomBar.addEventListener('scroll', function () {
-    topBar.scrollLeft = bottomBar.scrollLeft;
-  });
-});
-</script>
 
 {% endblock %}
 
