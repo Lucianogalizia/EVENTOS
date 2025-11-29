@@ -14,7 +14,7 @@
           <!-- Selector de pozo -->
           <div class="col-12 col-md-4">
             <label for="well" class="form-label">Pozo</label>
-          
+
             <!-- Input con autocompletar -->
             <input
               class="form-control"
@@ -25,15 +25,14 @@
               value="{{ pozo_sel or '' }}"
               required
             />
-          
+
             <!-- Lista de pozos para autocompletar -->
             <datalist id="lista-pozos">
               {% for p in pozos %}
-                <option value="{{ p }}"></option>
+              <option value="{{ p }}"></option>
               {% endfor %}
             </datalist>
           </div>
-          
 
           <!-- Selector de evento (solo si hay pozo) -->
           {% if pozo_sel %}
@@ -67,15 +66,28 @@
   <div class="col-12">
     <div class="card shadow-sm border-0">
       <div class="card-body">
-        <h5 class="card-title text-main">
-          {% if pozo_sel and evento_sel %}
-            Detalle intervención
-          {% elif pozo_sel %}
-            Seleccioná un evento
-          {% else %}
-            Seleccioná un pozo para comenzar
+
+        <!-- Título + botón Exportar -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title text-main mb-0">
+            {% if pozo_sel and evento_sel %}
+              Detalle intervención
+            {% elif pozo_sel %}
+              Seleccioná un evento
+            {% else %}
+              Seleccioná un pozo para comenzar
+            {% endif %}
+          </h5>
+
+          {% if pozo_sel and evento_sel and tabla_evento %}
+          <a
+            href="{{ url_for('exportar_evento', well=pozo_sel, event=evento_sel) }}"
+            class="btn btn-sm btn-outline-success"
+          >
+            Exportar a Excel
+          </a>
           {% endif %}
-        </h5>
+        </div>
 
         {% if tabla_evento %}
         <!-- wrapper para poder tener barra horizontal -->
@@ -116,7 +128,6 @@
 </div>
 
 {% endblock %}
-
 
 
 
