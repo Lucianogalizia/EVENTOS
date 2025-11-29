@@ -50,17 +50,21 @@ body {
   overflow: hidden;
 }
 
-/* 👉 Ensanchar columna expr1 en la tabla de detalle
-   (en tu orden actual es la 10ª columna) */
-#detalle-intervencion th:nth-child(10),
-#detalle-intervencion td:nth-child(10) {
-  width: 40%;
-  max-width: 40%;
-  white-space: pre-wrap;   /* respeta saltos de línea */
-  word-wrap: break-word;   /* corta palabras largas */
+/* Hacemos que la tabla respete anchos fijos para poder agrandar expr1 */
+#detalle-intervencion.table-custom {
+  table-layout: fixed;
 }
 
-/* Opcional: achicar un poco columnas de números/fechas para que expr1 gane espacio */
+/* 👉 Columna expr1 más ancha */
+#detalle-intervencion .col-expr1 {
+  min-width: 550px;      /* probá subir/bajar este valor a gusto */
+  width: 50%;            /* ocupa aprox. mitad de la tabla */
+  white-space: pre-wrap; /* respeta saltos de línea que vienen del texto */
+  word-wrap: break-word; /* corta palabras muy largas si hace falta */
+}
+
+/* Opcional: achicar un poco columnas “chicas” tipo fecha/número 
+   para que expr1 tenga más espacio */
 #detalle-intervencion th:nth-child(1),
 #detalle-intervencion td:nth-child(1),
 #detalle-intervencion th:nth-child(2),
@@ -84,5 +88,6 @@ body {
 .scroll-x-bottom {
   overflow-x: auto;
 }
+
 
 
