@@ -10,9 +10,6 @@ app = Flask(__name__)
 PROJECT_ID = "eventos-479403"
 DATASET_TABLE = "eventos_pozos.eventos"   # dataset.tabla que creaste en BigQuery
 
-# Usa credenciales por defecto:
-# - Local: GOOGLE_APPLICATION_CREDENTIALS
-# - Cloud Run: cuenta de servicio del servicio
 bq_client = bigquery.Client(project=PROJECT_ID)
 
 _df_global = None  # cache simple en memoria
@@ -202,6 +199,7 @@ def index():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
+
 
 
 
