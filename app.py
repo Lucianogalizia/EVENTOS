@@ -8,7 +8,7 @@ app = Flask(__name__)
 # CONFIG BIGQUERY
 # ============================
 PROJECT_ID = "eventos-479403"
-DATASET_TABLE = "eventos_pozos.eventos"   # dataset.tabla en BigQuery
+DATASET_TABLE = "eventos_pozos.eventos_fix"   # dataset.tabla en BigQuery
 TABLE_ID = f"{PROJECT_ID}.{DATASET_TABLE}"
 
 bq_client = bigquery.Client(project=PROJECT_ID)
