@@ -35,109 +35,100 @@
 
   <!-- JS general de la app -->
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // ==============================
-    // 1) Sincronizar scroll arriba/abajo en Detalle intervención
-    // ==============================
-    const topScroll    = document.getElementById("detalle-scroll-top");
-    const bottomScroll = document.getElementById("detalle-scroll-bottom");
-
-    if (topScroll && bottomScroll) {
-      const table = bottomScroll.querySelector("table");
-      const inner = topScroll.querySelector(".scroll-inner");
-      if (table && inner) {
-        inner.style.width = table.scrollWidth + "px";
-      }
-
-      topScroll.addEventListener("scroll", function () {
-        bottomScroll.scrollLeft = topScroll.scrollLeft;
-      });
-
-      bottomScroll.addEventListener("scroll", function () {
-        topScroll.scrollLeft = bottomScroll.scrollLeft;
-      });
-    }
-
-    // ==============================
-    // 2) Resetear EVENTO cuando cambia POZO
-    // ==============================
-    const wellSelect  = document.getElementById("well");
-    const eventSelect = document.getElementById("event");
-
-    if (wellSelect) {
-      wellSelect.addEventListener("change", function () {
-        if (eventSelect) {
-          // Primera opción (placeholder, normalmente "Seleccioná un evento")
-          eventSelect.selectedIndex = 0;
+    document.addEventListener("DOMContentLoaded", function () {
+      // ==============================
+      // 1) Sincronizar scroll arriba/abajo en Detalle intervención
+      // ==============================
+      const topScroll    = document.getElementById("detalle-scroll-top");
+      const bottomScroll = document.getElementById("detalle-scroll-bottom");
+  
+      if (topScroll && bottomScroll) {
+        const table = bottomScroll.querySelector("table");
+        const inner = topScroll.querySelector(".scroll-inner");
+        if (table && inner) {
+          inner.style.width = table.scrollWidth + "px";
         }
-        // Enviamos el formulario
-        if (wellSelect.form) {
-          wellSelect.form.submit();
-        }
-      });
-    }
-
-    if (eventSelect) {
-      eventSelect.addEventListener("change", function () {
-        if (eventSelect.form) {
-          eventSelect.form.submit();
-        }
-      });
-    }
-
-    // ==============================
-    // 3) Scroll horizontal con drag del mouse + rueda
-    //    sobre el contenedor de la tabla
-    // ==============================
-    const scrollAreas = document.querySelectorAll(
-      ".table-scroll-wrapper .table-responsive"
-    );
-
-    scrollAreas.forEach(function (scroll) {
-      let isDown   = false;
-      let startX   = 0;
-      let scrollLeft = 0;
-
-      // Mouse down: empezamos a arrastrar
-      scroll.addEventListener("mousedown", function (e) {
-        isDown = true;
-        scroll.classList.add("dragging");
-        const rect = scroll.getBoundingClientRect();
-        startX = e.pageX - rect.left;
-        scrollLeft = scroll.scrollLeft;
-      });
-
-      // Mouse up / salir del área: dejamos de arrastrar
-      ["mouseup", "mouseleave"].forEach(function (evt) {
-        scroll.addEventListener(evt, function () {
-          if (!isDown) return;
-          isDown = false;
-          scroll.classList.remove("dragging");
+  
+        topScroll.addEventListener("scroll", function () {
+          bottomScroll.scrollLeft = topScroll.scrollLeft;
         });
-      });
-
-      // Mouse move: movemos el scroll mientras está apretado
-      scroll.addEventListener("mousemove", function (e) {
-        if (!isDown) return;
-        e.preventDefault();
-        const rect = scroll.getBoundingClientRect();
-        const x = e.pageX - rect.left;
-        const walk = x - startX;     // podés multiplicar por 1.2 si querés más velocidad
-        scroll.scrollLeft = scrollLeft - walk;
-      });
-
-      // Extra: usar la rueda del mouse para mover en horizontal
-      scroll.addEventListener(
-        "wheel",
-        function (e) {
-          if (e.deltaY === 0) return;
-          e.preventDefault();
-          scroll.scrollLeft += e.deltaY; // rueda vertical → scroll horizontal
-        },
-        { passive: false }
+  
+        bottomScroll.addEventListener("scroll", function () {
+          topScroll.scrollLeft = bottomScroll.scrollLeft;
+        });
+      }
+  
+      // ==============================
+      // 2) Resetear EVENTO cuando cambia POZO
+      // ==============================
+      const wellSelect  = document.getElementById("well");
+      const eventSelect = document.getElementById("event");
+  
+      if (wellSelect) {
+        wellSelect.addEventListener("change", function () {
+          if (eventSelect) {
+            // Primera opción (placeholder, normalmente "Seleccioná un evento")
+            eventSelect.selectedIndex = 0;
+          }
+          // Enviamos el formulario
+          if (wellSelect.form) {
+            wellSelect.form.submit();
+          }
+        });
+      }
+  
+      if (eventSelect) {
+        eventSelect.addEventListener("change", function () {
+          if (eventSelect.form) {
+            eventSelect.form.submit();
+          }
+        });
+      }
+  
+      // ==============================
+      // 3) Scroll horizontal SOLO con drag del mouse
+      // ==============================
+      const scrollAreas = document.querySelectorAll(
+        ".table-scroll-wrapper .table-responsive"
       );
+  
+      scrollAreas.forEach(function (scroll) {
+        let isDown     = false;
+        let startX     = 0;
+        let scrollLeft = 0;
+  
+        // Mouse down: empezamos a arrastrar
+        scroll.addEventListener("mousedown", function (e) {
+          isDown = true;
+          scroll.classList.add("dragging");
+          const rect = scroll.getBoundingClientRect();
+          startX = e.pageX - rect.left;
+          scrollLeft = scroll.scrollLeft;
+        });
+  
+        // Mouse up / salir del área: dejamos de arrastrar
+        ["mouseup", "mouseleave"].forEach(function (evt) {
+          scroll.addEventListener(evt, function () {
+            if (!isDown) return;
+            isDown = false;
+            scroll.classList.remove("dragging");
+          });
+        });
+  
+        // Mouse move: movemos el scroll mientras está apretado
+        scroll.addEventListener("mousemove", function (e) {
+          if (!isDown) return;
+          e.preventDefault();
+          const rect = scroll.getBoundingClientRect();
+          const x = e.pageX - rect.left;
+          const walk = x - startX; // podés multiplicar por 1.2 si querés más velocidad
+          scroll.scrollLeft = scrollLeft - walk;
+        });
+  
+        // 👇 OJO: ya NO hay listener de 'wheel' acá.
+        // La ruedita vuelve a funcionar normal (scroll vertical de la página).
+      });
     });
-  });
   </script>
 </body>
 </html>
