@@ -50,17 +50,23 @@ body {
   overflow: hidden;
 }
 
-/* 👉 Ensanchar columna expr1 en la tabla de detalle
-   (en tu orden actual es la 10ª columna) */
-#detalle-intervencion th:nth-child(10),
-#detalle-intervencion td:nth-child(10) {
-  width: 40%;
-  max-width: 40%;
-  white-space: pre-wrap;   /* respeta saltos de línea */
-  word-wrap: break-word;   /* corta palabras largas */
+/* ============================
+   Columna expr1 más ancha
+   ============================ */
+
+#detalle-intervencion {
+  table-layout: fixed;  /* reparte ancho fijo entre las columnas */
 }
 
-/* Opcional: achicar un poco columnas de números/fechas para que expr1 gane espacio */
+/* Columna expr1 identificada por clase */
+.col-expr1 {
+  min-width: 400px;
+  max-width: 500px;
+  white-space: pre-wrap;   /* respeta saltos de línea */
+  word-wrap: break-word;   /* corta palabras largas si hace falta */
+}
+
+/* (Si querés, podés ajustar otras columnas, pero no es obligatorio)
 #detalle-intervencion th:nth-child(1),
 #detalle-intervencion td:nth-child(1),
 #detalle-intervencion th:nth-child(2),
@@ -69,19 +75,36 @@ body {
 #detalle-intervencion td:nth-child(3) {
   width: 6%;
 }
+*/
 
-/* ===== Scroll superior/inferior sincronizado ===== */
+/* ============================
+   Scroll superior / inferior
+   ============================ */
+
+.table-scroll-wrapper {
+  width: 100%;
+}
+
+/* Barra de scroll superior (solo la barrita) */
 .scroll-x-top {
   overflow-x: auto;
   overflow-y: hidden;
-  height: 16px;         /* solo la barrita */
+  height: 16px;       /* solo la barrita */
 }
 
+/* Este div solo sirve para tener un ancho igual al de la tabla */
 .scroll-x-top .scroll-inner {
   height: 1px;
 }
 
+/* Contenedor de la tabla con barra de scroll inferior */
 .scroll-x-bottom {
   overflow-x: auto;
 }
+
+/* Opcional: para que la barra de abajo no quede muy pegada */
+.scroll-x-bottom .table-responsive {
+  margin-top: 0.25rem;
+}
+
 
