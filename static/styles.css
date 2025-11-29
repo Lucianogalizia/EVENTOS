@@ -72,6 +72,16 @@ body {
   overflow-x: auto;
 }
 
+/* Wrapper de la tabla de detalle */
+.table-scroll-wrapper .table-responsive {
+  overflow-x: auto;   /* ya lo tenés por Bootstrap, pero lo dejamos explícito */
+  cursor: grab;       /* mano abierta */
+}
+
+/* Mientras arrastrás */
+.table-scroll-wrapper .table-responsive.dragging {
+  cursor: grabbing;   /* mano cerrada */
+}
 
 
 
