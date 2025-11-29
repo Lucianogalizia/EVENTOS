@@ -82,7 +82,9 @@
               <thead>
                 <tr>
                   {% for col in columnas %}
-                  <th scope="col">{{ col }}</th>
+                  <th scope="col" {% if col == 'expr1' %}class="col-expr1"{% endif %}>
+                    {{ col }}
+                  </th>
                   {% endfor %}
                 </tr>
               </thead>
@@ -90,7 +92,9 @@
                 {% for fila in tabla_evento %}
                 <tr>
                   {% for col in columnas %}
-                  <td>{{ fila[col] if fila[col] is not none else "" }}</td>
+                  <td{% if col == 'expr1' %} class="col-expr1"{% endif %}>
+                    {{ fila[col] if fila[col] is not none else "" }}
+                  </td>
                   {% endfor %}
                 </tr>
                 {% endfor %}
@@ -109,6 +113,7 @@
 </div>
 
 {% endblock %}
+
 
 
 
