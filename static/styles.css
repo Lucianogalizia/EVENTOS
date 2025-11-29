@@ -50,28 +50,11 @@ body {
   overflow: hidden;
 }
 
-/* Hacemos que la tabla respete anchos fijos para poder agrandar expr1 */
-#detalle-intervencion.table-custom {
-  table-layout: fixed;
-}
-
-/* 👉 Columna expr1 más ancha */
+/* 👉 SOLO ensanchamos la columna expr1, sin tocar las demás */
 #detalle-intervencion .col-expr1 {
-  min-width: 550px;      /* probá subir/bajar este valor a gusto */
-  width: 50%;            /* ocupa aprox. mitad de la tabla */
-  white-space: pre-wrap; /* respeta saltos de línea que vienen del texto */
-  word-wrap: break-word; /* corta palabras muy largas si hace falta */
-}
-
-/* Opcional: achicar un poco columnas “chicas” tipo fecha/número 
-   para que expr1 tenga más espacio */
-#detalle-intervencion th:nth-child(1),
-#detalle-intervencion td:nth-child(1),
-#detalle-intervencion th:nth-child(2),
-#detalle-intervencion td:nth-child(2),
-#detalle-intervencion th:nth-child(3),
-#detalle-intervencion td:nth-child(3) {
-  width: 6%;
+  min-width: 550px;      /* subí o bajá este valor si querés */
+  white-space: normal;   /* texto en líneas normales */
+  word-break: break-word;/* corta palabras muy largas si hace falta */
 }
 
 /* ===== Scroll superior/inferior sincronizado ===== */
@@ -88,6 +71,7 @@ body {
 .scroll-x-bottom {
   overflow-x: auto;
 }
+
 
 
 
